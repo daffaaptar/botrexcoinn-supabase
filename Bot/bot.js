@@ -2,7 +2,7 @@ const { Telegraf } = require('telegraf')
 const TOKEN = '7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY'
 const bot = new Telegraf(TOKEN)
 
-const web_link = "https://cheery-meringue-53791b.n etlify.app"
+const web_link = "https://botrexcoin.netlify.app"
 
 bot.start((ctx) => {
     ctx.reply('Welcome', {
