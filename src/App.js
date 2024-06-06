@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Button from './component/button';
 import Dino from "./component/Dino/dino";
-import { supabase } from './supabaseClient';
+import  supabase  from './supabaseClient';
 import './App.css';
 
 const tele = window.Telegram.WebApp;
