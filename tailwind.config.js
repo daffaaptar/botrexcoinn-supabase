@@ -2,8 +2,11 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx,css}"],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'bgtetris': "url('/images/bgtetris.jpg')"
+    },
   },
   plugins: [],
 }
-
+}

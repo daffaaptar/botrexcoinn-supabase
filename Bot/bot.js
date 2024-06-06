@@ -5,7 +5,7 @@ const bot = new Telegraf(TOKEN)
 const web_link = "https://botrexcoin.netlify.app"
 
 bot.start((ctx) => {
-    ctx.reply('Welcome', {
+    ctx.reply('This bot implements a T-Rex jumping game.', {
         reply_markup: {
             inline_keyboard: [[{ text: "Play Botrexcoin", web_app: { url: web_link } }]],
         },

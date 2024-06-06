@@ -1,6 +1,7 @@
-.App {
+/* .App {
   text-align: center;
 }
+
 
 .App-logo {
   height: 40vmin;
@@ -35,4 +36,7 @@
   to {
     transform: rotate(360deg);
   }
+} */
+.bg-bgtetris {
+  overflow-x: hidden;
 }

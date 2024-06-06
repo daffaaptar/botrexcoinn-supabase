@@ -1,21 +1,36 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Dino.css";
 
-function Dino() {
+function Dino({ onGameOver }) {
   const dinoRef = useRef();
   const cactusRef = useRef();
   const [score, setScore] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
-  const cactusIntervalRef = useRef(null); // Ref untuk menyimpan ID interval cactus
+  const cactusIntervalRef = useRef(null);
 
   const jump = () => {
-    if (!!dinoRef.current && dinoRef.current.classList !== "jump") {
+    if (!!dinoRef.current && !dinoRef.current.classList.contains("jump")) {
       dinoRef.current.classList.add("jump");
       setTimeout(function () {
         dinoRef.current.classList.remove("jump");
       }, 300);
     }
   };
+
+  const handleKeyDown = (event) => {
+    if (event.key === " " && !gameStarted) {
+      setGameStarted(true);
+      jump();
+    } else if (event.key === " " && gameStarted) {
+      jump();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     if (gameStarted) {
@@ -28,27 +43,24 @@ function Dino() {
         );
 
         if (cactusLeft < 40 && cactusLeft > 0 && dinoTop >= 140) {
-          alert("Game Over! Your Score : " + score);
+          onGameOver(score);
           setScore(0);
-          setGameStarted(false); // Set gameStarted ke false setelah game over
-          clearInterval(cactusIntervalRef.current); // Hentikan interval cactus saat game berakhir
+          setGameStarted(false);
+          clearInterval(cactusIntervalRef.current);
         } else {
           setScore((prevScore) => prevScore + 1);
         }
       }, 10);
 
-      // Simpan ID interval cactus di useRef
       cactusIntervalRef.current = isAlive;
 
       return () => clearInterval(isAlive);
     }
-  }, [gameStarted, score]);
+  }, [gameStarted, score, onGameOver]);
 
   useEffect(() => {
     if (gameStarted) {
-      // Hanya memulai interval cactus jika game sudah dimulai
       const interval = setInterval(() => {
-        // Gerakkan cactus
         const cactus = cactusRef.current;
         if (cactus) {
           const cactusLeft = parseInt(
@@ -56,9 +68,8 @@ function Dino() {
           );
           cactus.style.left = cactusLeft - 1 + "px";
         }
-      }, 100); // Mengatur interval agar kecepatan cactus lebih lambat
+      }, 100);
 
-      // Membersihkan interval saat komponen unmount atau game berakhir
       return () => clearInterval(interval);
     }
   }, [gameStarted]);
@@ -71,8 +82,8 @@ function Dino() {
   };
 
   return (
-    <div className="game" onTouchStart={handleTouchStart}>
-      Score : {score}
+    <div className="game pl-2" onTouchStart={handleTouchStart}>
+      Coins : {score}
       <div id="dino" ref={dinoRef}></div>
       {gameStarted && <div id="cactus" ref={cactusRef}></div>}
     </div>

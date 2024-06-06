@@ -1,8 +1,11 @@
 .game {
-    width: 600px;
+    width: 325px;
     height: 225px;
     border: 1px solid black;
     margin: auto;
+    /* background-image: url('img/bgtetris.jpg'); Jika gambar berada di public/your-image.jpg */
+    /* background-size: cover; */
+    /* background-position: center; */
   }
   
   #dino {
