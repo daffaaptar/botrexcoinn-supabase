@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from './component/button';
 import Dino from "./component/Dino/dino";
 import { supabase } from './supabaseClient';
 import './App.css';
 
+const tele = window.Telegram.WebApp;
+
 function App() {
-  const tele = window.Telegram.WebApp;
   const [coins, setCoins] = useState(0);
   const [telegramId, setTelegramId] = useState(null);
 
@@ -26,7 +27,7 @@ function App() {
       .single();
 
     if (error) {
-      console.error('Error fetching user coins:', error);
+      console.error('Error fetching user coins:', error.message);
     } else if (data) {
       setCoins(data.coins);
     }
@@ -58,9 +59,22 @@ function App() {
       .upsert({ telegram_id: userId, coins: newCoins }, { onConflict: ['telegram_id'] });
 
     if (error) {
-      console.error('Error saving user coins:', error);
+      console.error('Error saving user coins:', error.message);
     }
   };
+
+  useEffect(() => {
+    const testConnection = async () => {
+      const { data, error } = await supabase.from('users').select('*').limit(1);
+      if (error) {
+        console.error('Error connecting to Supabase:', error.message);
+      } else {
+        console.log('Connection to Supabase successful:', data);
+      }
+    };
+
+    testConnection();
+  }, []);
 
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
