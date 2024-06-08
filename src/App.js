@@ -72,21 +72,20 @@ function App() {
     logToBackend(`saveCoins called with telegramId: ${telegramId} and newCoins: ${newCoins}`);
     showNotification(`saveCoins called with telegramId: ${telegramId} and newCoins: ${newCoins}`);
     try {
-      const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data', {
-        method: 'POST',
+      const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data?telegram_id=eq.${telegramId}`, {
+        method: 'PATCH', // Menggunakan PATCH untuk memperbarui data yang sudah ada
         headers: {
           'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
           'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
           'Content-Type': 'application/json',
-          'Prefer': 'resolution=merge-duplicates'
         },
-        body: JSON.stringify({ telegram_id: telegramId, coins: newCoins })
+        body: JSON.stringify({ coins: newCoins }), // Hanya mengirim jumlah koin baru untuk diperbarui
       });
-
+  
       if (!response.ok) {
         throw new Error('Error saving coins');
       }
-
+  
       logToBackend('Coins saved successfully');
       showNotification('Coins saved successfully');
     } catch (error) {
@@ -95,7 +94,7 @@ function App() {
       console.error('Error saving coins:', error.message);
     }
   };
-
+  
   const handleEarnClick = () => {
     console.log('Earn button clicked');
   };
