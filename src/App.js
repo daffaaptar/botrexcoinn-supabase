@@ -22,7 +22,7 @@ function App() {
 
   const fetchCoins = async (telegramId) => {
     try {
-      const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/users?telegram_id=eq.${telegramId}`, {
+      const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data?telegram_id=eq.${telegramId}`, {
         method: 'GET',
         headers: {
           'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
@@ -46,7 +46,7 @@ function App() {
 
   const saveCoins = async (telegramId, newCoins) => {
     try {
-      const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/users', {
+      const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data', {
         method: 'POST',
         headers: {
           'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
