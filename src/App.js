@@ -23,7 +23,7 @@ function App() {
     try {
       if (telegramId) {
         const { data, error } = await supabase
-          .from('nama_tabel_anda_di_supabase')
+          .from('users')
           .select('coins')
           .eq('telegram_id', telegramId);
 
@@ -59,7 +59,7 @@ function App() {
       if (telegramId) {
         // Simpan jumlah koin pengguna ke Supabase saat permainan berakhir
         const { error } = await supabase
-          .from('nama_tabel_anda_di_supabase')
+          .from('users')
           .upsert([{ 
             telegram_id: telegramId, 
             coins: coins + score 
