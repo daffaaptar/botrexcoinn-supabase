@@ -1,5 +1,5 @@
 const { Telegraf } = require('telegraf');
-const TOKEN = 'YOUR_BOT_TOKEN_HERE';
+const TOKEN = '7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY';
 const bot = new Telegraf(TOKEN);
 
 const web_link = "https://botrexcoin.netlify.app";

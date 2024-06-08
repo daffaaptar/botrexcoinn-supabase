@@ -58,7 +58,7 @@ function App() {
     try {
       if (telegramId) {
         // Simpan jumlah koin pengguna ke Supabase saat permainan berakhir
-        const { error } = await supabase
+        const { data,error } = await supabase
           .from('users')
           .upsert([{ 
             telegram_id: telegramId, 
