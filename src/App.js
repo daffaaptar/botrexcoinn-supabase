@@ -52,38 +52,37 @@ function App() {
   };
 
   const handleGameOver = async (score) => {
+    console.log('Game over with score:', score);
     const newCoins = coins + score;
     setCoins(newCoins);
     if (telegramId) {
-      await saveUserCoins(telegramId, newCoins);
+      console.log('Saving user coins...');
+      const { error } = await saveUserCoins(telegramId, newCoins);
+      if (!error) {
+        console.log('User coins saved successfully.');
+      } else {
+        console.error('Failed to save user coins:', error.message);
+      }
     }
   };
 
   const saveUserCoins = async (userId, newCoins) => {
     try {
+      console.log(`Attempting to save ${newCoins} coins for user ID: ${userId}`);
       const { error } = await supabase
         .from('users')
         .upsert({ telegram_id: userId, coins: newCoins }, { onConflict: ['telegram_id'] });
 
-      if (error) {
-        console.error('Error saving user coins:', error.message);
-      } else {
-        console.log(`Successfully saved ${newCoins} coins for user ID: ${userId}`);
-      }
+      return { error };
     } catch (err) {
       console.error('Unexpected error saving user coins:', err);
+      return { error: err };
     }
   };
 
   useEffect(() => {
     const testConnection = async () => {
       try {
-        // Pastikan supabaseClient telah diinisialisasi sebelum digunakan
-        if (!supabase) {
-          console.error('Supabase client is not initialized');
-          return;
-        }
-
         const { data, error } = await supabase.from('users').select('*').limit(1);
         if (error) {
           console.error('Error connecting to Supabase:', error.message);
@@ -96,7 +95,7 @@ function App() {
     };
 
     testConnection();
-  }, [supabase]); // Menambahkan supabase ke dependencies agar useEffect dipanggil kembali saat supabase berubah
+  }, []);
 
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
