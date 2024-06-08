@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Button from './component/button';
 import Dino from "./component/Dino/dino";
 import './App.css';
-import supabase from './supabaseClient'; // Import koneksi ke Supabase
 
 const tele = window.Telegram.WebApp;
 
@@ -12,32 +11,59 @@ function App() {
 
   useEffect(() => {
     tele.ready();
-    fetchCoins(); // Panggil fungsi untuk memuat koin pengguna saat komponen dimuat
-    // Mendapatkan ID Telegram pengguna dari URL saat aplikasi dimuat
     const urlParams = new URLSearchParams(window.location.search);
     const telegramIdFromUrl = urlParams.get('telegram_id');
     setTelegramId(telegramIdFromUrl);
+
+    if (telegramIdFromUrl) {
+      fetchCoins(telegramIdFromUrl);
+    }
   }, []);
 
-  const fetchCoins = async () => {
+  const fetchCoins = async (telegramId) => {
     try {
-      if (telegramId) {
-        const { data, error } = await supabase
-          .from('users')
-          .select('coins')
-          .eq('telegram_id', telegramId);
-
-        if (error) {
-          console.error('Error fetching coins:', error.message);
-          return;
+      const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/users?telegram_id=eq.${telegramId}`, {
+        method: 'GET',
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
+          'Content-Type': 'application/json'
         }
+      });
 
-        if (data && data.length > 0) {
-          setCoins(data[0].coins); // Mengatur jumlah koin dari data yang diperoleh dari Supabase
-        }
+      if (!response.ok) {
+        throw new Error('Error fetching coins');
+      }
+
+      const data = await response.json();
+      if (data && data.length > 0) {
+        setCoins(data[0].coins);
       }
     } catch (error) {
       console.error('Error fetching coins:', error.message);
+    }
+  };
+
+  const saveCoins = async (telegramId, newCoins) => {
+    try {
+      const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/users', {
+        method: 'POST',
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({ telegram_id: telegramId, coins: newCoins })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error saving coins');
+      }
+
+      console.log('Coins saved successfully');
+    } catch (error) {
+      console.error('Error saving coins:', error.message);
     }
   };
 
@@ -54,25 +80,11 @@ function App() {
   };
 
   const handleGameOver = async (score) => {
-    setCoins(prevCoins => prevCoins + score);
-    try {
-      if (telegramId) {
-        // Simpan jumlah koin pengguna ke Supabase saat permainan berakhir
-        const { data,error } = await supabase
-          .from('users')
-          .upsert([{ 
-            telegram_id: telegramId, 
-            coins: coins + score 
-          }], { 
-            returning: 'minimal' 
-          });
+    const newCoins = coins + score;
+    setCoins(newCoins);
 
-        if (error) {
-          console.error('Error saving coins:', error.message);
-        }
-      }
-    } catch (error) {
-      console.error('Error saving coins:', error.message);
+    if (telegramId) {
+      await saveCoins(telegramId, newCoins);
     }
   };
 
@@ -81,10 +93,8 @@ function App() {
       {/* Coin Container */}
       <div className="flex flex-col items-center justify-center mt-10">
         <div className="bg-slate-700 rounded-md p-4 mb-2 flex items-center justify-center">
-          {/* Logo Coin */}
           <img src="./btx.png" alt="Coin Logo" className="w-20 h-20" />
           <div className="bg-slate-500 rounded-md px-2 m-5 text-white text-2xl font-bold">
-            {/* Jumlah Coin */}
             {coins.toLocaleString()}
           </div>
         </div>
