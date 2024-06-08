@@ -8,6 +8,7 @@ const tele = window.Telegram.WebApp;
 function App() {
   const [coins, setCoins] = useState(0);
   const [telegramId, setTelegramId] = useState(null);
+  const [notification, setNotification] = useState('');
 
   useEffect(() => {
     tele.ready();
@@ -19,6 +20,29 @@ function App() {
       fetchCoins(telegramIdFromUrl);
     }
   }, []);
+
+  const logToBackend = async (message) => {
+    try {
+      await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/logs', {
+        method: 'POST',
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+      });
+    } catch (error) {
+      console.error('Error logging to backend:', error.message);
+    }
+  };
+
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification('');
+    }, 5000);
+  };
 
   const fetchCoins = async (telegramId) => {
     try {
@@ -45,6 +69,8 @@ function App() {
   };
 
   const saveCoins = async (telegramId, newCoins) => {
+    logToBackend(`saveCoins called with telegramId: ${telegramId} and newCoins: ${newCoins}`);
+    showNotification(`saveCoins called with telegramId: ${telegramId} and newCoins: ${newCoins}`);
     try {
       const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data', {
         method: 'POST',
@@ -61,8 +87,11 @@ function App() {
         throw new Error('Error saving coins');
       }
 
-      console.log('Coins saved successfully');
+      logToBackend('Coins saved successfully');
+      showNotification('Coins saved successfully');
     } catch (error) {
+      logToBackend(`Error saving coins: ${error.message}`);
+      showNotification(`Error saving coins: ${error.message}`);
       console.error('Error saving coins:', error.message);
     }
   };
@@ -80,6 +109,8 @@ function App() {
   };
 
   const handleGameOver = async (score) => {
+    logToBackend(`Game over with coins: ${score}`);
+    showNotification(`Game over with coins: ${score}`);
     const newCoins = coins + score;
     setCoins(newCoins);
 
@@ -90,6 +121,13 @@ function App() {
 
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
+      {/* Notification */}
+      {notification && (
+        <div className="fixed top-0 left-0 right-0 bg-red-500 text-white p-4 text-center z-50">
+          {notification}
+        </div>
+      )}
+
       {/* Coin Container */}
       <div className="flex flex-col items-center justify-center mt-10">
         <div className="bg-slate-700 rounded-md p-4 mb-2 flex items-center justify-center">
