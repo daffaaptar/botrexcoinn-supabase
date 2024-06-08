@@ -121,11 +121,11 @@ function App() {
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
       {/* Notification */}
-      {notification && (
+      {/* {notification && (
         <div className="fixed top-0 left-0 right-0 bg-red-500 text-white p-4 text-center z-50">
           {notification}
         </div>
-      )}
+      )} */}
 
       {/* Coin Container */}
       <div className="flex flex-col items-center justify-center mt-10">
