@@ -17,20 +17,19 @@ function Dino({ onGameOver }) {
     }
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === " " && !gameStarted) {
-      setGameStarted(true);
-      jump();
-    } else if (event.key === " " && gameStarted) {
-      jump();
-    }
-  };
-
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
+    const handleKeyDown = (event) => {
+      if (event.key === " " && !gameStarted) {
+        setGameStarted(true);
+        jump();
+      } else if (event.key === " " && gameStarted) {
+        jump();
+      }
+    };
 
+    document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [gameStarted]); // Tambahkan gameStarted ke array dependensi
 
   useEffect(() => {
     if (gameStarted) {

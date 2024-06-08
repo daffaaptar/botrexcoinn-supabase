@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Button from './component/button';
 import Dino from "./component/Dino/dino";
-import  supabase  from './supabaseClient';
+import supabase from './supabaseClient';
 import './App.css';
 
 const tele = window.Telegram.WebApp;
@@ -12,7 +12,8 @@ function App() {
 
   useEffect(() => {
     tele.ready();
-    const userId = tele.initDataUnsafe?.user?.id;
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('user_id') || tele.initDataUnsafe?.user?.id;
     if (userId) {
       setTelegramId(userId);
       fetchUserCoins(userId);
@@ -20,16 +21,21 @@ function App() {
   }, []);
 
   const fetchUserCoins = async (userId) => {
-    const { data, error } = await supabase
-      .from('users')
-      .select('coins')
-      .eq('telegram_id', userId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('coins')
+        .eq('telegram_id', userId)
+        .single();
 
-    if (error) {
-      console.error('Error fetching user coins:', error.message);
-    } else if (data) {
-      setCoins(data.coins);
+      if (error) {
+        console.error('Error fetching user coins:', error.message);
+      } else if (data) {
+        setCoins(data.coins);
+        console.log(`Fetched ${data.coins} coins for user ID: ${userId}`);
+      }
+    } catch (err) {
+      console.error('Unexpected error fetching user coins:', err);
     }
   };
 
@@ -54,27 +60,43 @@ function App() {
   };
 
   const saveUserCoins = async (userId, newCoins) => {
-    const { error } = await supabase
-      .from('users')
-      .upsert({ telegram_id: userId, coins: newCoins }, { onConflict: ['telegram_id'] });
+    try {
+      const { error } = await supabase
+        .from('users')
+        .upsert({ telegram_id: userId, coins: newCoins }, { onConflict: ['telegram_id'] });
 
-    if (error) {
-      console.error('Error saving user coins:', error.message);
+      if (error) {
+        console.error('Error saving user coins:', error.message);
+      } else {
+        console.log(`Successfully saved ${newCoins} coins for user ID: ${userId}`);
+      }
+    } catch (err) {
+      console.error('Unexpected error saving user coins:', err);
     }
   };
 
   useEffect(() => {
     const testConnection = async () => {
-      const { data, error } = await supabase.from('users').select('*').limit(1);
-      if (error) {
-        console.error('Error connecting to Supabase:', error.message);
-      } else {
-        console.log('Connection to Supabase successful:', data);
+      try {
+        // Pastikan supabaseClient telah diinisialisasi sebelum digunakan
+        if (!supabase) {
+          console.error('Supabase client is not initialized');
+          return;
+        }
+
+        const { data, error } = await supabase.from('users').select('*').limit(1);
+        if (error) {
+          console.error('Error connecting to Supabase:', error.message);
+        } else {
+          console.log('Connection to Supabase successful:', data);
+        }
+      } catch (err) {
+        console.error('Unexpected error connecting to Supabase:', err);
       }
     };
 
     testConnection();
-  }, []);
+  }, [supabase]); // Menambahkan supabase ke dependencies agar useEffect dipanggil kembali saat supabase berubah
 
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
