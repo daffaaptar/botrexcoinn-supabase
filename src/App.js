@@ -132,7 +132,7 @@ function App() {
         </div>
         
         {/* Coin Container */}
-        <div className="bg-slate-700 rounded-md p-3 mb-2 mt-1 flex items-center justify-center w-full">
+        <div className="bg-slate-700 rounded-md p-1 mb-2 mt-1 flex items-center justify-center w-full">
           <img src="./btx.png" alt="Coin Logo" className="w-20 h-20 mr-4" />
           <div className="bg-slate-500 rounded-md w-44 m-2 outline-dashed">
             <div className='text-yellow-400 text-lg text-center font-bold'>{coins.toLocaleString()}</div>
@@ -145,8 +145,8 @@ function App() {
       </div>
 
       {/* Button Container */}
-      <div className="flex bg-slate-700 rounded-md my-5 px-5 justify-center">
-        <div className="flex justify-center items-center mb-5 mt-5">
+      <div className="flex bg-slate-700 rounded-md my-3 px-3 justify-center">
+        <div className="flex justify-center items-center mb-3 mt-3">
           <Button type="earn" onClick={() => console.log('Earn button clicked')} />
           <Button type="friend" onClick={() => console.log('Friend button clicked')} />
           <Button type="boost" onClick={() => console.log('Boost button clicked')} />
