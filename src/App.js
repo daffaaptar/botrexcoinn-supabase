@@ -8,13 +8,16 @@ const tele = window.Telegram.WebApp;
 function App() {
   const [coins, setCoins] = useState(0);
   const [telegramId, setTelegramId] = useState(null);
+  const [username, setUsername] = useState('');
   const [notification, setNotification] = useState('');
 
   useEffect(() => {
     tele.ready();
     const urlParams = new URLSearchParams(window.location.search);
     const telegramIdFromUrl = urlParams.get('telegram_id');
+    const usernameFromUrl = urlParams.get('username');
     setTelegramId(telegramIdFromUrl);
+    setUsername(usernameFromUrl);
 
     if (telegramIdFromUrl) {
       fetchCoins(telegramIdFromUrl);
@@ -68,24 +71,25 @@ function App() {
     }
   };
 
-  const saveCoins = async (telegramId, newCoins) => {
-    logToBackend(`saveCoins called with telegramId: ${telegramId} and newCoins: ${newCoins}`);
-    showNotification(`saveCoins called with telegramId: ${telegramId} and newCoins: ${newCoins}`);
+  const saveCoins = async (telegramId, newCoins, username) => {
+    logToBackend(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, and username: ${username}`);
+    showNotification(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, and username: ${username}`);
     try {
-      const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data?telegram_id=eq.${telegramId}`, {
-        method: 'PATCH', // Menggunakan PATCH untuk memperbarui data yang sudah ada
+      const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data', {
+        method: 'POST',
         headers: {
           'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
           'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
           'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates'
         },
-        body: JSON.stringify({ coins: newCoins }), // Hanya mengirim jumlah koin baru untuk diperbarui
+        body: JSON.stringify({ telegram_id: telegramId, coins: newCoins, username: username })
       });
-  
+
       if (!response.ok) {
         throw new Error('Error saving coins');
       }
-  
+
       logToBackend('Coins saved successfully');
       showNotification('Coins saved successfully');
     } catch (error) {
@@ -94,7 +98,7 @@ function App() {
       console.error('Error saving coins:', error.message);
     }
   };
-  
+
   const handleEarnClick = () => {
     console.log('Earn button clicked');
   };
@@ -114,18 +118,18 @@ function App() {
     setCoins(newCoins);
 
     if (telegramId) {
-      await saveCoins(telegramId, newCoins);
+      await saveCoins(telegramId, newCoins, username);
     }
   };
 
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
       {/* Notification */}
-      {/* {notification && (
+      {notification && (
         <div className="fixed top-0 left-0 right-0 bg-red-500 text-white p-4 text-center z-50">
           {notification}
         </div>
-      )} */}
+      )}
 
       {/* Coin Container */}
       <div className="flex flex-col items-center justify-center mt-10">

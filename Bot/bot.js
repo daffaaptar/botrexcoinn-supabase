@@ -1,17 +1,19 @@
 const { Telegraf } = require('telegraf');
-const TOKEN = '7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY';
-const bot = new Telegraf(TOKEN);
 
-const web_link = "https://botrexcoin.osc-fr1.scalingo.io/";
+const bot = new Telegraf('7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY');
 
 bot.start((ctx) => {
-    const telegramId = ctx.from.id; // Mendapatkan ID Telegram pengguna
-    const gameUrl = `${web_link}?telegram_id=${telegramId}`; // Menyertakan ID Telegram dalam tautan
-    ctx.reply('This bot implements a T-Rex jumping game.', {
-        reply_markup: {
-            inline_keyboard: [[{ text: "Play Botrexcoin", web_app: { url: gameUrl } }]],
-        },
-    });
+  const telegramId = ctx.from.id;
+  const username = ctx.from.username;
+  const webAppUrl = `https://botrexcoin.osc-fr1.scalingo.io/?telegram_id=${telegramId}&username=${username}`;
+
+  ctx.reply('Welcome!', {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Open Web App', web_app: { url: webAppUrl } }]
+      ]
+    }
+  });
 });
 
 bot.launch();
