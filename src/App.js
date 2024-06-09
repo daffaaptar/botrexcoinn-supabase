@@ -75,15 +75,15 @@ function App() {
     logToBackend(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, and username: ${username}`);
     showNotification(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, and username: ${username}`);
     try {
-      const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data', {
-        method: 'POST',
+      const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data?telegram_id=eq.${telegramId}`, {
+        method: 'PATCH',
         headers: {
           'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
           'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
           'Content-Type': 'application/json',
-          'Prefer': 'resolution=merge-duplicates'
+          'Prefer': 'return=representation'
         },
-        body: JSON.stringify({ telegram_id: telegramId, coins: newCoins, username: username })
+        body: JSON.stringify({ coins: newCoins, username: username })
       });
 
       if (!response.ok) {
