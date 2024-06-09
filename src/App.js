@@ -16,6 +16,10 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const telegramIdFromUrl = urlParams.get('telegram_id');
     const usernameFromUrl = urlParams.get('username');
+    
+    console.log('Telegram ID:', telegramIdFromUrl);
+    console.log('Username:', usernameFromUrl);  // Log the username to check if it's being captured correctly
+    
     setTelegramId(telegramIdFromUrl);
     setUsername(usernameFromUrl);
 
@@ -29,8 +33,8 @@ function App() {
       await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/logs', {
         method: 'POST',
         headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
+          'apikey': '7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY',
+          'Authorization': `Bearer 7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ message }),
@@ -52,8 +56,8 @@ function App() {
       const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data?telegram_id=eq.${telegramId}`, {
         method: 'GET',
         headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
+          'apikey': '7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY',
+          'Authorization': `Bearer 7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY`,
           'Content-Type': 'application/json'
         }
       });
@@ -78,8 +82,8 @@ function App() {
       const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data?telegram_id=eq.${telegramId}`, {
         method: 'PATCH',
         headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
+          'apikey': '7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY',
+          'Authorization': `Bearer 7170415970:AAHT91_gXLM_YDbe7Mpqg0-otpg2159PlvY`,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
@@ -125,11 +129,11 @@ function App() {
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
       {/* Notification */}
-      {notification && (
+      {/* {notification && (
         <div className="fixed top-0 left-0 right-0 bg-red-500 text-white p-4 text-center z-50">
           {notification}
         </div>
-      )}
+      )} */}
 
       {/* Coin Container */}
       <div className="flex flex-col items-center justify-center mt-10">

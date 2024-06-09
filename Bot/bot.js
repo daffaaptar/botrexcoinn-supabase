@@ -7,7 +7,7 @@ bot.start((ctx) => {
   const username = ctx.from.username;
   const webAppUrl = `https://botrexcoin.osc-fr1.scalingo.io/?telegram_id=${telegramId}&username=${username}`;
 
-  ctx.reply('This bot implements a T-Rex jumping game.', {
+  ctx.reply('Welcome to the T-Rex jumping game bot!', {
     reply_markup: {
       inline_keyboard: [
         [{ text: 'Open Web App', web_app: { url: webAppUrl } }]
@@ -17,3 +17,4 @@ bot.start((ctx) => {
 });
 
 bot.launch();
+
