@@ -9,6 +9,7 @@ function App() {
   const [coins, setCoins] = useState(0);
   const [telegramId, setTelegramId] = useState(null);
   const [username, setUsername] = useState('');
+  const [telegramName, setTelegramName] = useState('');
   const [notification, setNotification] = useState('');
 
   useEffect(() => {
@@ -16,12 +17,15 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     const telegramIdFromUrl = urlParams.get('telegram_id');
     const usernameFromUrl = urlParams.get('username');
+    const telegramNameFromUrl = urlParams.get('telegram_name');
     
     console.log('Telegram ID:', telegramIdFromUrl);
-    console.log('Username:', usernameFromUrl);  // Log the username to check if it's being captured correctly
-    
+    console.log('Username:', usernameFromUrl);
+    console.log('Telegram Name:', telegramNameFromUrl);
+
     setTelegramId(telegramIdFromUrl);
     setUsername(usernameFromUrl);
+    setTelegramName(telegramNameFromUrl);
 
     if (telegramIdFromUrl) {
       fetchCoins(telegramIdFromUrl);
@@ -75,9 +79,9 @@ function App() {
     }
   };
 
-  const saveCoins = async (telegramId, newCoins, username) => {
-    logToBackend(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, and username: ${username}`);
-    showNotification(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, and username: ${username}`);
+  const saveCoins = async (telegramId, newCoins, username, telegramName) => {
+    logToBackend(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, username: ${username}, and telegramName: ${telegramName}`);
+    showNotification(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, username: ${username}, and telegramName: ${telegramName}`);
     try {
       const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data?telegram_id=eq.${telegramId}`, {
         method: 'PATCH',
@@ -87,7 +91,7 @@ function App() {
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
-        body: JSON.stringify({ coins: newCoins, username: username })
+        body: JSON.stringify({ coins: newCoins, username: username, telegram_name: telegramName })
       });
 
       if (!response.ok) {
@@ -122,9 +126,10 @@ function App() {
     setCoins(newCoins);
 
     if (telegramId) {
-      await saveCoins(telegramId, newCoins, username);
+      await saveCoins(telegramId, newCoins, username, telegramName);
     }
   };
+
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
       {/* Notification */}
