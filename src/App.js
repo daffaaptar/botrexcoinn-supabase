@@ -28,7 +28,7 @@ function App() {
     setTelegramName(telegramNameFromUrl);
 
     if (telegramIdFromUrl) {
-      fetchCoins(telegramIdFromUrl);
+      fetchOrCreateUser(telegramIdFromUrl, usernameFromUrl, telegramNameFromUrl);
     }
   }, []);
 
@@ -55,7 +55,7 @@ function App() {
     }, 5000);
   };
 
-  const fetchCoins = async (telegramId) => {
+  const fetchOrCreateUser = async (telegramId, username, telegramName) => {
     try {
       const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data?telegram_id=eq.${telegramId}`, {
         method: 'GET',
@@ -67,15 +67,49 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error('Error fetching coins');
+        throw new Error('Error fetching user');
       }
 
       const data = await response.json();
       if (data && data.length > 0) {
         setCoins(data[0].coins);
+      } else {
+        // User not found, create a new user
+        await createUser(telegramId, username, telegramName);
       }
     } catch (error) {
-      console.error('Error fetching coins:', error.message);
+      console.error('Error fetching or creating user:', error.message);
+    }
+  };
+
+  const createUser = async (telegramId, username, telegramName) => {
+    try {
+      const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data', {
+        method: 'POST',
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
+          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({
+          telegram_id: telegramId,
+          username: username,
+          telegram_name: telegramName,
+          coins: 0
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error creating user');
+      }
+
+      const data = await response.json();
+      setCoins(data[0].coins);
+      showNotification('User created successfully');
+    } catch (error) {
+      console.error('Error creating user:', error.message);
+      showNotification(`Error creating user: ${error.message}`);
     }
   };
 
