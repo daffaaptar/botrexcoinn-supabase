@@ -10,7 +10,6 @@ function App() {
   const [telegramId, setTelegramId] = useState(null);
   const [username, setUsername] = useState('');
   const [telegramName, setTelegramName] = useState('');
-  const [notification, setNotification] = useState('');
 
   useEffect(() => {
     tele.ready();
@@ -31,29 +30,6 @@ function App() {
       fetchOrCreateUser(telegramIdFromUrl, usernameFromUrl, telegramNameFromUrl);
     }
   }, []);
-
-  const logToBackend = async (message) => {
-    try {
-      await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/logs', {
-        method: 'POST',
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message }),
-      });
-    } catch (error) {
-      console.error('Error logging to backend:', error.message);
-    }
-  };
-
-  const showNotification = (message) => {
-    setNotification(message);
-    setTimeout(() => {
-      setNotification('');
-    }, 5000);
-  };
 
   const fetchOrCreateUser = async (telegramId, username, telegramName) => {
     try {
@@ -106,16 +82,12 @@ function App() {
 
       const data = await response.json();
       setCoins(data[0].coins);
-      showNotification('User created successfully');
     } catch (error) {
       console.error('Error creating user:', error.message);
-      showNotification(`Error creating user: ${error.message}`);
     }
   };
 
   const saveCoins = async (telegramId, newCoins, username, telegramName) => {
-    logToBackend(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, username: ${username}, and telegramName: ${telegramName}`);
-    showNotification(`saveCoins called with telegramId: ${telegramId}, newCoins: ${newCoins}, username: ${username}, and telegramName: ${telegramName}`);
     try {
       const response = await fetch(`https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data?telegram_id=eq.${telegramId}`, {
         method: 'PATCH',
@@ -131,31 +103,12 @@ function App() {
       if (!response.ok) {
         throw new Error('Error saving coins');
       }
-
-      logToBackend('Coins saved successfully');
-      showNotification('Coins saved successfully');
     } catch (error) {
-      logToBackend(`Error saving coins: ${error.message}`);
-      showNotification(`Error saving coins: ${error.message}`);
       console.error('Error saving coins:', error.message);
     }
   };
 
-  const handleEarnClick = () => {
-    console.log('Earn button clicked');
-  };
-
-  const handleFriendClick = () => {
-    console.log('Friend button clicked');
-  };
-
-  const handleBoostClick = () => {
-    console.log('Boost button clicked');
-  };
-
   const handleGameOver = async (score) => {
-    logToBackend(`Game over with coins: ${score}`);
-    showNotification(`Game over with coins: ${score}`);
     const newCoins = coins + score;
     setCoins(newCoins);
 
@@ -166,19 +119,23 @@ function App() {
 
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
-      {/* Notification */}
-      {/* {notification && (
-        <div className="fixed top-0 left-0 right-0 bg-red-500 text-white p-4 text-center z-50">
-          {notification}
+      {/* Container untuk kedua item */}
+      <div className="flex flex-col items-center justify-center mt-3 px-4 w-full">
+        {/* Leaderboard Container */}
+        <div className="bg-yellow-500 outline rounded-md mb-1 flex items-center justify-center w-full">
+          <div className="rounded-md w-64">
+            <div className='text-sm py-1  font-bold'>
+              <h1>Top Players - <span className='text-red-600'>telegram_name</span></h1>
+            </div>
+          </div>
+          <button className='font-bold pl-5 mb-1 text-lg'>+</button>
         </div>
-      )} */}
-
-      {/* Coin Container */}
-      <div className="flex flex-col items-center justify-center mt-10">
-        <div className="bg-slate-700 rounded-md p-4 mb-2 flex items-center justify-center">
-          <img src="./btx.png" alt="Coin Logo" className="w-20 h-20" />
-          <div className="bg-slate-500 rounded-md px-2 m-5 text-white text-2xl font-bold">
-            {coins.toLocaleString()}
+        
+        {/* Coin Container */}
+        <div className="bg-slate-700 rounded-md p-3 mb-2 mt-1 flex items-center justify-center w-full">
+          <img src="./btx.png" alt="Coin Logo" className="w-20 h-20 mr-4" />
+          <div className="bg-slate-500 rounded-md w-44 m-2 outline-dashed">
+            <div className='text-yellow-400 text-lg text-center font-bold'>{coins.toLocaleString()}</div>
           </div>
         </div>
       </div>
@@ -190,9 +147,9 @@ function App() {
       {/* Button Container */}
       <div className="flex bg-slate-700 rounded-md my-5 px-5 justify-center">
         <div className="flex justify-center items-center mb-5 mt-5">
-          <Button type="earn" onClick={handleEarnClick} />
-          <Button type="friend" onClick={handleFriendClick} />
-          <Button type="boost" onClick={handleBoostClick} />
+          <Button type="earn" onClick={() => console.log('Earn button clicked')} />
+          <Button type="friend" onClick={() => console.log('Friend button clicked')} />
+          <Button type="boost" onClick={() => console.log('Boost button clicked')} />
         </div>
       </div>
     </div>
