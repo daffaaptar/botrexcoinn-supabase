@@ -145,13 +145,15 @@ function App() {
       </div>
 
       {/* Button Container */}
-      <div className="flex bg-slate-700 rounded-md my-3 px-3 justify-center">
+      <div className="flex flex-col items-center justify-center mt-3 px-4 w-full">
+      <div className=" bg-slate-700 rounded-md my-3 px- justify-center w-full">
         <div className="flex justify-center items-center mb-3 mt-3">
           <Button type="earn" onClick={() => console.log('Earn button clicked')} />
           <Button type="friend" onClick={() => console.log('Friend button clicked')} />
           <Button type="boost" onClick={() => console.log('Boost button clicked')} />
         </div>
       </div>
+    </div>
     </div>
   );
 }
