@@ -153,13 +153,13 @@ function App() {
       <div className="flex flex-col items-center justify-center mt-3 px-4 w-full">
 
         {/* Leaderboard Container */}
-        <div className="bg-yellow-500 outline rounded-md mb-1 flex items-center justify-center w-full" onClick={() => navigate('/pages/leaderboard')}>
+        <div className="bg-yellow-400 outline rounded-md mb-1 flex items-center justify-center w-full" onClick={() => navigate('/pages/leaderboard')}>
           <div className="rounded-md w-64">
             <div className='text-sm py-1 font-bold'>
-              <h1>Top Players - <span className='text-red-600'>{topPlayer}</span></h1>
+              <h1>Top Players - <span className='text-red-600'>{topPlayer}</span>🔥</h1>
             </div>
           </div>
-          <button className='font-bold pl-5 mb-1 text-lg'>+</button>
+          <button className='font-bold pl-5 mb-1 mt-1 text-lg'>+</button>
         </div>
          
         {/* Coins Cointainer */}

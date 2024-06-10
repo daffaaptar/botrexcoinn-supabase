@@ -46,7 +46,7 @@ const Leaderboard = () => {
 
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-start">
-      <FontAwesomeIcon className='p-2 bg-yellow-600 outline  rounded-lg text-left absolute top-0 left-0 ml-5 mt-5 cursor-pointer' icon={faArrowLeft} onClick={() => window.history.back()} />
+      <FontAwesomeIcon className='p-2 bg-yellow-400 outline  rounded-lg text-left absolute top-0 left-0 ml-5 mt-5 cursor-pointer' icon={faArrowLeft} onClick={() => window.history.back()} />
       <div className="flex flex-col items-center justify-start pt-14 w-full px-4">
         <img src="../badge.png" alt="Coin Logo" className="w-32 h-32 mb-4" />
         <div className="bg-slate-800 w-full max-w-screen-lg rounded-md mt-4 p-4 flex flex-col" style={{ maxHeight: '70vh' }}>
