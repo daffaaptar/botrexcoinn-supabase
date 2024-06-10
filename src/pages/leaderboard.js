@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const Leaderboard = () => {
   const [users, setUsers] = useState([]);
+
   useEffect(() => {
-    const handleTelegramBack = () => {
-      // Memanggil fungsi navigasi mundur dari Telegram WebApp
-      window.Telegram.WebApp.goBack();
+    const handleBackButton = () => {
+      window.history.back();
     };
-
-    // Mendengarkan event dari Telegram WebApp untuk kembali
-    window.addEventListener('tgBack', handleTelegramBack);
-
-    // Membersihkan event listener saat komponen dibongkar
+  
+    window.addEventListener('popstate', handleBackButton);
+  
     return () => {
-      window.removeEventListener('tgBack', handleTelegramBack);
+      window.removeEventListener('popstate', handleBackButton);
     };
   }, []);
 
@@ -46,6 +46,7 @@ const Leaderboard = () => {
 
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-start">
+      <FontAwesomeIcon className='p-2 bg-yellow-600 outline  rounded-lg text-left absolute top-0 left-0 ml-5 mt-5 cursor-pointer' icon={faArrowLeft} onClick={() => window.history.back()} />
       <div className="flex flex-col items-center justify-start pt-14 w-full px-4">
         <img src="../badge.png" alt="Coin Logo" className="w-32 h-32 mb-4" />
         <div className="bg-slate-800 w-full max-w-screen-lg rounded-md mt-4 p-4 flex flex-col" style={{ maxHeight: '70vh' }}>
