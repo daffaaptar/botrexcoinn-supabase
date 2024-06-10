@@ -2,6 +2,20 @@ import React, { useEffect, useState } from 'react';
 
 const Leaderboard = () => {
   const [users, setUsers] = useState([]);
+  useEffect(() => {
+    const handleTelegramBack = () => {
+      // Memanggil fungsi navigasi mundur dari Telegram WebApp
+      window.Telegram.WebApp.goBack();
+    };
+
+    // Mendengarkan event dari Telegram WebApp untuk kembali
+    window.addEventListener('tgBack', handleTelegramBack);
+
+    // Membersihkan event listener saat komponen dibongkar
+    return () => {
+      window.removeEventListener('tgBack', handleTelegramBack);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -28,6 +42,7 @@ const Leaderboard = () => {
 
     fetchLeaderboard();
   }, []);
+  
 
   return (
     <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-start">
@@ -40,6 +55,7 @@ const Leaderboard = () => {
           <div className="flex flex-col text-white text-xs overflow-y-auto">
             {users.map((user, index) => (
               <div key={index} className="flex justify-between p-2 border-b border-gray-700">
+                 <span>{index + 1}.</span>
                 <span>{user.telegram_name}</span>
                 <span>{user.coins.toLocaleString()} coins</span>
               </div>
