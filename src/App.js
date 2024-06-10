@@ -146,6 +146,11 @@ function App() {
 
     fetchTopPlayer();
   }, []);
+
+  const handleEarnClick = () => {
+    navigate('/pages/earn'); // Langkah 3: Mengarahkan pengguna ke halaman earn.js
+  };
+
   
 
   return (
@@ -178,7 +183,7 @@ function App() {
       <div className="flex flex-col items-center justify-center mt-3 px-4 w-full">
         <div className=" bg-slate-700 rounded-md my-3 px- justify-center w-full">
           <div className="flex justify-center items-center mb-3 mt-3">
-            <Button type="earn" onClick={() => console.log('Earn button clicked')} />
+            <Button type="earn" onClick={() => navigate('/pages/earn')} />
             <Button type="friend" onClick={() => console.log('Friend button clicked')} />
             <Button type="boost" onClick={() => console.log('Boost button clicked')} />
           </div>
