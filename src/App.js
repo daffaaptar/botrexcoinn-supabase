@@ -146,11 +146,6 @@ function App() {
 
     fetchTopPlayer();
   }, []);
-
-  const handleEarnClick = () => {
-    navigate('/pages/earn'); // Langkah 3: Mengarahkan pengguna ke halaman earn.js
-  };
-
   
 
   return (
