@@ -11,7 +11,7 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
+    <TonConnectUIProvider manifestUrl="https://botrexcoin.osc-fr1.scalingo.io/tonconnect-manifest.json">
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
