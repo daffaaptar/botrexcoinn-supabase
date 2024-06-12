@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { useTonConnectUI } from '@tonconnect/ui-react';
+import { useTonConnectUI, TonConnectButton} from '@tonconnect/ui-react';
 
 const Earn = () => {
   const [tonConnectUI] = useTonConnectUI();
@@ -74,22 +74,23 @@ const Earn = () => {
       icon={faArrowLeft}
       onClick={() => window.history.back()}
     />
-    <div className="flex flex-col items-center justify-center mt-20 px-4 w-full">
+   <div className="flex flex-col items-center justify-center mt-20 px-4 w-full">
       {/* Wallet Container */}
       <div className="bg-blue-500 outline rounded-md mb-1 flex items-center justify-center w-full">
         <div className="rounded-md flex items-center">
-          <img src="../wallet.png" alt="Wallet Logo" className="w-10 h-10 mr-2" />
+          {/* <img src="../wallet.png" alt="Wallet Logo" className="w-10 h-10 mr-2" /> */}
           <div className='text-sm py-1 text-white font-mono font-bold'>
             {address ? (
               <h1>{address}</h1>
             ) : (
               <button className='cursor-pointer' onClick={handleConnectWallet}>
-                <h1>Connect to your wallet</h1>
+                {/* <h1>Connect to your wallet</h1> */}
+                <TonConnectButton className="my-button-class" style={{ float: "right" }}/> {/* Gunakan TonConnectButton di sini */}
               </button>
             )}
           </div>
           {!address && (
-            <button className='font-bold pl-5 mb-1 mt-1 text-lg text-white'>+</button>
+            <button className='font-bold pl-5 mb-1 mt-1 text-lg text-white'></button>
           )}
         </div>
       </div>
