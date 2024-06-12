@@ -25,7 +25,7 @@ const Earn = () => {
         const connectedWallet = tonConnectUI.wallet;
         if (connectedWallet) {
           setAddress(connectedWallet.address);
-          await postAddressToSupabase(connectedWallet.address); // Post address to Supabase upon connection
+          await postAddressToSupabase(connectedWallet.address);
         }
       }
     } catch (error) {
@@ -37,7 +37,7 @@ const Earn = () => {
     try {
       await tonConnectUI.disconnectWallet();
       setAddress('');
-      console.log('Wallet disconnected'); // Log when wallet is disconnected
+      console.log('Wallet disconnected');
     } catch (error) {
       console.error('Error disconnecting wallet:', error);
     }
@@ -85,7 +85,7 @@ const Earn = () => {
             ) : (
               <button className='cursor-pointer' onClick={handleConnectWallet}>
                 {/* <h1>Connect to your wallet</h1> */}
-                <TonConnectButton className="my-button-class" style={{ float: "right" }}/> {/* Gunakan TonConnectButton di sini */}
+                <TonConnectButton className="my-button-class" style={{ float: "right" }}/> 
               </button>
             )}
           </div>
