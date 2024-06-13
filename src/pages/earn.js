@@ -1,21 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { useTonConnectUI, TonConnectButton} from '@tonconnect/ui-react';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { useTonConnectUI, TonConnectButton } from '@tonconnect/ui-react';
 
 const Earn = () => {
   const [tonConnectUI] = useTonConnectUI();
+  const [telegramId, setTelegramId] = useState(null);
+  const [username, setUsername] = useState('');
+  const [telegramName, setTelegramName] = useState('');
   const [address, setAddress] = useState('');
 
   useEffect(() => {
-    const checkConnection = async () => {
-      const userWallet = tonConnectUI.wallet;
-      if (userWallet) {
-        setAddress(userWallet.address);
-      }
-    };
-    checkConnection();
-  }, [tonConnectUI]);
+    const urlParams = new URLSearchParams(window.location.search);
+    const telegramIdFromUrl = urlParams.get('telegram_id');
+    const usernameFromUrl = urlParams.get('username');
+    const telegramNameFromUrl = urlParams.get('telegram_name');
+
+    console.log('Telegram ID:', telegramIdFromUrl);
+    console.log('Username:', usernameFromUrl);
+    console.log('Telegram Name:', telegramNameFromUrl);
+
+    setTelegramId(telegramIdFromUrl);
+    setUsername(usernameFromUrl);
+    setTelegramName(telegramNameFromUrl);
+  }, []);
 
   const handleConnectWallet = async () => {
     try {
@@ -25,7 +33,7 @@ const Earn = () => {
         const connectedWallet = tonConnectUI.wallet;
         if (connectedWallet) {
           setAddress(connectedWallet.address);
-          await postAddressToSupabase(connectedWallet.address);
+          await saveAddressToSupabase(connectedWallet.address);
         }
       }
     } catch (error) {
@@ -33,78 +41,54 @@ const Earn = () => {
     }
   };
 
-  const handleLogout = async () => {
+  const saveAddressToSupabase = async (walletAddress) => {
     try {
-      await tonConnectUI.disconnectWallet();
-      setAddress('');
-      console.log('Wallet disconnected');
-    } catch (error) {
-      console.error('Error disconnecting wallet:', error);
-    }
-  };
-
-  const postAddressToSupabase = async (address) => {
-    try {
-      const apiUrl = 'https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data';
-      const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k';
-      const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k';
-
-      const response = await fetch(apiUrl, {
+      const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data', {
         method: 'POST',
         headers: {
-          'apikey': apiKey,
-          'Authorization': `Bearer ${authToken}`,
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmYnl4aXR5Y2xnbml2bWJrdXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTczNTYyNjksImV4cCI6MjAzMjkzMjI2OX0.8OcevvyQHI6Cz9ZVLzQ-yLK6YoYy6zojNKhf-HqDY6k',
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
-        body: JSON.stringify({ address: address })
+        body: JSON.stringify({
+          telegram_id: telegramId,
+          username: username,
+          telegram_name: telegramName,
+          address: walletAddress
+        })
       });
 
+      if (!response.ok) {
+        throw new Error('Error saving address to Supabase');
+      }
+
       const data = await response.json();
-      console.log('Response from Supabase:', data);
+      console.log('Address saved to Supabase:', data);
     } catch (error) {
-      console.error('Error posting address to Supabase:', error);
+      console.error('Error saving address to Supabase:', error);
     }
   };
 
   return (
-    <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-between">
-    <FontAwesomeIcon
-      className='p-2 bg-yellow-400 outline rounded-lg text-left absolute top-0 left-0 ml-4 mt-5 cursor-pointer'
-      icon={faArrowLeft}
-      onClick={() => window.history.back()}
-    />
-   <div className="flex flex-col items-center justify-center mt-20 px-4 w-full">
-      {/* Wallet Container */}
-      <div className="bg-blue-500 outline rounded-md mb-1 flex items-center justify-center w-full">
-        <div className="rounded-md flex items-center">
-          {/* <img src="../wallet.png" alt="Wallet Logo" className="w-10 h-10 mr-2" /> */}
-          <div className='text-sm py-1 text-white font-mono font-bold'>
-            {address ? (
-              <h1>{address}</h1>
-            ) : (
-              <button className='cursor-pointer' onClick={handleConnectWallet}>
-                {/* <h1>Connect to your wallet</h1> */}
-                <TonConnectButton className="my-button-class" style={{ float: "right" }}/> 
-              </button>
-            )}
-          </div>
-          {!address && (
-            <button className='font-bold pl-5 mb-1 mt-1 text-lg text-white'></button>
-          )}
-        </div>
+    <div className="bg-bgtetris bg-cover bg-center min-h-screen flex flex-col items-center justify-start">
+      <FontAwesomeIcon 
+        className='p-2 bg-yellow-400 outline rounded-lg text-left absolute top-0 left-0 ml-4 mt-5 cursor-pointer' 
+        icon={faArrowLeft} 
+        onClick={() => window.history.back()} 
+      />
+      {/* Button wallet */}
+      <div className="w-full flex justify-end p-4">
+        <TonConnectButton className="my-button-class" onClick={handleConnectWallet} />
       </div>
-      <div className="flex flex-col items-center justify-start pt-5 w-full px-4">
+
+      {/* Component Coins */}
+      <div className="flex flex-col items-center justify-center pt-5 w-full px-4">
         <img src="../morebtx.png" alt="Coin Logo" className="w-48 h-48" />
-        <h1 className='font-mono font-bold text-2xl bg-yellow-400 rounded-lg px-3'>Get More Botrexcoins</h1>
-        {address && (
-          <button className='mt-3 text-white' onClick={handleLogout}>
-            <FontAwesomeIcon icon={faSignOutAlt} /> Logout
-          </button>
-        )}
+        <h1 className='font-mono font-bold text-2xl bg-yellow-400 rounded-lg px-3 mt-4'>Get More Botrexcoins</h1>
       </div>
     </div>
-  </div>
-);
+  );
 }
+
 export default Earn;
