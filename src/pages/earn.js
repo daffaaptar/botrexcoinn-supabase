@@ -27,14 +27,11 @@ const Earn = () => {
 
   const handleConnectWallet = async () => {
     try {
-      const userWallet = tonConnectUI.wallet;
-      if (!userWallet) {
-        await tonConnectUI.connectWallet();
-        const connectedWallet = tonConnectUI.wallet;
-        if (connectedWallet) {
-          setAddress(connectedWallet.address);
-          await saveAddressToSupabase(connectedWallet.address);
-        }
+      await tonConnectUI.connectWallet();
+      const connectedWallet = tonConnectUI.wallet;
+      if (connectedWallet) {
+        setAddress(connectedWallet.address);
+        await saveAddressToSupabase(connectedWallet.address);
       }
     } catch (error) {
       console.error('Error connecting wallet:', error);
@@ -43,6 +40,15 @@ const Earn = () => {
 
   const saveAddressToSupabase = async (walletAddress) => {
     try {
+      const bodyData = JSON.stringify({
+        telegram_id: telegramId,
+        username: username,
+        telegram_name: telegramName,
+        address: walletAddress
+      });
+
+      console.log('Sending data to Supabase:', bodyData); // Log data to be sent
+
       const response = await fetch('https://dfbyxityclgnivmbkupr.supabase.co/rest/v1/data', {
         method: 'POST',
         headers: {
@@ -51,15 +57,12 @@ const Earn = () => {
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
-        body: JSON.stringify({
-          telegram_id: telegramId,
-          username: username,
-          telegram_name: telegramName,
-          address: walletAddress
-        })
+        body: bodyData
       });
 
       if (!response.ok) {
+        const errorDetails = await response.json();
+        console.error('Error details:', errorDetails); // Log error details
         throw new Error('Error saving address to Supabase');
       }
 
